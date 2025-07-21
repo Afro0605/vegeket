@@ -1,2 +1,13 @@
 django==4.2.11
 django-environ==0.8.1
+
+gunicorn==21.2.0
+whitenoise==6.6.0
+
+dj-database-url==2.1.0
+dj-static==0.0.6
+
+# pip installするときに一旦消す
+psycopg2-binary==2.9.9
+
+django-heroku==0.3.1

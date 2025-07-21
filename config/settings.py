@@ -11,19 +11,20 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 import environ  # 追記
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env()
-root = environ.Path(BASE_DIR / 'secrets')
+root = environ.Path(BASE_DIR)
 
 # 本番環境用
 # env.read_env(root('.env.prod'))
 
 # 開発環境用
-env.read_env(root('.env.dev'))
+env.read_env(root('.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -34,7 +35,7 @@ SECRET_KEY = env.str('SECRET_KEY')  # 変更
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG')  # 変更
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')  # 変更
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.herokuapp.com'] # 変更
 
 # Application definition
 
@@ -50,6 +51,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Heroku静的ファイル対応
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -84,12 +86,15 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    DATABASES = {'default': dj_database_url.config(conn_max_age=600, ssl_require=True)}
 
 
 # Password validation
@@ -128,9 +133,14 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# Heroku静的ファイル対応
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 STATICFILES_DIRS = [
     BASE_DIR / 'static',  # 追記
 ]
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

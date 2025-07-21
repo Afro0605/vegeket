@@ -3,3 +3,4 @@ venv/
 secrets/
 base/migrations/
 db.sqlite3
+.env
