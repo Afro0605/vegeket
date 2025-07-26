@@ -5,7 +5,18 @@ gunicorn==21.2.0
 whitenoise==6.6.0
 
 dj-database-url==2.1.0
-dj-static==0.0.6
+
+asgiref==3.6.0
+certifi==2021.10.8
+charset-normalizer==2.0.12
+
+idna==3.3
+Pillow==9.1.*
+pytz==2022.1
+requests==2.27.1
+sqlparse==0.4.2
+stripe==4.0.*
+urllib3==1.26.9
 
 # pip installするときに一旦消す
 psycopg2-binary==2.9.9
